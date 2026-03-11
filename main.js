@@ -45,6 +45,7 @@ function render() {
     for (let i = 0; i < todos.length; i++) {
         const li = document.createElement('li');
         li.textContent = todos[i].text;
+        li.classList.add('done');
             
         const btn = document.createElement('button');
         btn.textContent = 'Delete';
@@ -61,12 +62,12 @@ function render() {
         li.appendChild(btnEdit);
 
         btnEdit.addEventListener('click', function () {
-            const newValue = prompt('Edit todo', todos[i]);
+            const newValue = prompt('Edit todo', todos[i].text);
 
             if (newValue === null || newValue.trim() === '') {
                 return;
             } else {
-                todos[i] = newValue;
+                todos[i].text= newValue;
                 saveTodos();
                 render();
             }
@@ -78,10 +79,9 @@ function render() {
         checkBox.checked = todos[i].done;
 
         checkBox.addEventListener('change', function(event) {
-            if (event.currentTarget.checked) {
-                todos[i].done = checkBox.checked;
-                saveTodos();
-            }
+            todos[i].done = checkBox.checked;
+            saveTodos();
+            render();
         });
 
         list.appendChild(li);
@@ -97,5 +97,6 @@ input.addEventListener('keydown', function(event) {
         addTodo();
     }
 });
+
 
 console.log(todos);
