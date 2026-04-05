@@ -1,6 +1,7 @@
 const input = document.querySelector('#todoInput');
 const addBtn = document.querySelector('#addBtn');
 const list = document.querySelector('#todoList');
+const counter = document.querySelector('#counter');
 
 let todos = [];
 
@@ -27,6 +28,8 @@ function addTodo() {
     const value = input.value;
 
     if (value.trim() === '') {
+
+        alert('Please add To do');
         return;
     } 
 
@@ -42,13 +45,20 @@ function addTodo() {
 
 function render() {
     list.innerHTML = '';
+
+    let completed = 0;
     for (let i = 0; i < todos.length; i++) {
         const li = document.createElement('li');
         li.textContent = todos[i].text;
-        li.classList.add('done');
+
+        if (todos[i].done) {
+            li.classList.add('done');
+            completed++;
+        }
             
         const btn = document.createElement('button');
         btn.textContent = 'Delete';
+        btn.classList.add = 'delete-button';
         li.appendChild(btn);
         
         btn.addEventListener('click', function() {
@@ -59,6 +69,7 @@ function render() {
 
         const btnEdit = document.createElement('button');
         btnEdit.textContent = 'Edit';
+        btnEdit.classList.add = 'edit-button';
         li.appendChild(btnEdit);
 
         btnEdit.addEventListener('click', function () {
@@ -67,7 +78,7 @@ function render() {
             if (newValue === null || newValue.trim() === '') {
                 return;
             } else {
-                todos[i].text= newValue;
+                todos[i].text = newValue;
                 saveTodos();
                 render();
             }
@@ -79,13 +90,16 @@ function render() {
         checkBox.checked = todos[i].done;
 
         checkBox.addEventListener('change', function(event) {
-            todos[i].done = checkBox.checked;
+            todos[i].done = event.currentTarget.checked;
             saveTodos();
             render();
+            
         });
 
         list.appendChild(li);
     }
+
+    counter.textContent = `${completed} / ${todos.length} completed`;
 }
 
 function saveTodos() {
@@ -97,6 +111,3 @@ input.addEventListener('keydown', function(event) {
         addTodo();
     }
 });
-
-
-console.log(todos);
