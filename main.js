@@ -106,7 +106,7 @@ function render() {
                } else if (event.key === 'Escape') {
                    render();
                }
-            )};    
+            });    
         });
 
         const checkBox = document.createElement('input');
