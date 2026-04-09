@@ -62,10 +62,15 @@ function render() {
         li.appendChild(btn);
         
         btn.addEventListener('click', function() {
-            todos.splice(i, 1);
-            saveTodos();
-            render();
+            li.classList.add('fade-out');
+
+            setTimeout(() => {
+                todos.splice(i, 1);
+                saveTodos()
+                render();
+            }, 300); 
         });
+
 
         const btnEdit = document.createElement('button');
         btnEdit.textContent = 'Edit';
@@ -74,7 +79,6 @@ function render() {
 
         btnEdit.addEventListener('click', function () {
             li.innerHTML = '';
-
             const editInput = document.createElement('input');
             editInput.value = todos[i].text;
             li.appendChild(editInput);
@@ -86,11 +90,11 @@ function render() {
             saveBtn.textContent = 'Save';
             li.appendChild(saveBtn);
 
-            function saveTodo() {
+            function saveTodo(){
                 const newValue = editInput.value;
-                
+
                 if (newValue === null || newValue.trim() === '') {
-                    return;
+                return;
                 } else {
                     todos[i].text = newValue;
                     saveTodos();
@@ -101,12 +105,12 @@ function render() {
             saveBtn.addEventListener('click', saveTodo);
 
             editInput.addEventListener('keydown', function(event) {
-               if (event.key === 'Enter') {
-                   saveTodo();
-               } else if (event.key === 'Escape') {
-                   render();
-               }
-            });    
+                if (event.key === 'Enter') {
+                    saveTodo();
+                } else if (event.key === 'Escape') {
+                    render();
+                }
+            });
         });
 
         const checkBox = document.createElement('input');
