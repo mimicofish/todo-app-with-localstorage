@@ -58,7 +58,7 @@ function render() {
             
         const btn = document.createElement('button');
         btn.textContent = 'Delete';
-        btn.classList.add = 'delete-button';
+        btn.classList.add('delete-button');
         li.appendChild(btn);
         
         btn.addEventListener('click', function() {
@@ -69,19 +69,44 @@ function render() {
 
         const btnEdit = document.createElement('button');
         btnEdit.textContent = 'Edit';
-        btnEdit.classList.add = 'edit-button';
+        btnEdit.classList.add('edit-button');
         li.appendChild(btnEdit);
 
         btnEdit.addEventListener('click', function () {
-            const newValue = prompt('Edit todo', todos[i].text);
+            li.innerHTML = '';
 
-            if (newValue === null || newValue.trim() === '') {
-                return;
-            } else {
-                todos[i].text = newValue;
-                saveTodos();
-                render();
-            }
+            const editInput = document.createElement('input');
+            editInput.value = todos[i].text;
+            li.appendChild(editInput);
+
+            editInput.focus();
+            editInput.select();
+
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = 'Save';
+            li.appendChild(saveBtn);
+
+            funtion saveTodo(){
+                const newValue = editInput.value;
+                
+                if (newValue === null || newValue.trim() === '') {
+                    return;
+                } else {
+                    todos[i].text = newValue;
+                    saveTodos();
+                    render();
+                }
+            };
+
+            saveBtn.addEventListener('click', saveTodo);
+
+            editInput.addEventListener('keydown', function(event) {
+               if (event.key === 'Enter') {
+                   saveTodo();
+               } else if (event.key === 'Escape') {
+                   render();
+               }
+            )};    
         });
 
         const checkBox = document.createElement('input');
