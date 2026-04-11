@@ -60,76 +60,88 @@ function render() {
         btn.textContent = 'Delete';
         btn.classList.add('delete-button');
         li.appendChild(btn);
+
+        btn.dataset.action = 'delete';
+        li.dataset.index = i;
         
-        btn.addEventListener('click', function() {
-            li.classList.add('fade-out');
-
-            setTimeout(() => {
-                todos.splice(i, 1);
-                saveTodos()
-                render();
-            }, 300); 
-        });
-
-
         const btnEdit = document.createElement('button');
         btnEdit.textContent = 'Edit';
         btnEdit.classList.add('edit-button');
         li.appendChild(btnEdit);
 
-        btnEdit.addEventListener('click', function () {
-            li.innerHTML = '';
-            const editInput = document.createElement('input');
-            editInput.value = todos[i].text;
-            li.appendChild(editInput);
-
-            editInput.focus();
-            editInput.select();
-
-            const saveBtn = document.createElement('button');
-            saveBtn.textContent = 'Save';
-            li.appendChild(saveBtn);
-
-            function saveTodo(){
-                const newValue = editInput.value;
-
-                if (newValue === null || newValue.trim() === '') {
-                return;
-                } else {
-                    todos[i].text = newValue;
-                    saveTodos();
-                    render();
-                }
-            };
-
-            saveBtn.addEventListener('click', saveTodo);
-
-            editInput.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
-                    saveTodo();
-                } else if (event.key === 'Escape') {
-                    render();
-                }
-            });
-        });
+        btnEdit.dataset.action = 'edit';
 
         const checkBox = document.createElement('input');
         checkBox.type = 'checkbox';
         li.appendChild(checkBox);
         checkBox.checked = todos[i].done;
 
-        checkBox.addEventListener('change', function(event) {
-            todos[i].done = event.currentTarget.checked;
-            saveTodos();
-            render();
-            
-        });
+        checkBox.dataset.action = 'toggle';
 
         list.appendChild(li);
+
     }
 
     counter.textContent = `${completed} / ${todos.length} completed`;
+
 }
+
+list.addEventListener('click', function(event) {
+    const action = event.target.dataset.action;
+
+    if (!action) return;
+
+    const li = event.target.closest('li');
+    const index = li.dataset.index;
+
+    if (action === 'delete') {
+        li.classList.add('fade-out');
+
+        setTimeout(() => {
+            todos.splice(index, 1);
+            saveTodos()
+            render();
+        }, 300); 
+    } else if (action === 'edit') {
+        li.innerHTML = '';
+        const editInput = document.createElement('input');
+        editInput.value = todos[index].text;
+        li.appendChild(editInput);
+
+        editInput.focus();
+        editInput.select();
+
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = 'Save';
+        li.appendChild(saveBtn);
+
+        function saveTodo(){
+            const newValue = editInput.value;
+
+            if (newValue === null || newValue.trim() === '') {
+            return;
+            } else {
+                todos[index].text = newValue;
+                saveTodos();
+                render();
+            }
+        };
+
+        saveBtn.addEventListener('click', saveTodo);
+
+        editInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                saveTodo();
+            } else if (event.key === 'Escape') {
+                render();
+            }
+        });
+    } else if (action === 'toggle') {
+        todos[index].done = !todos[index].done;
+        saveTodos();
+        render();
+    }
+});
 
 function saveTodos() {
     localStorage.setItem('todos', JSON.stringify(todos));
